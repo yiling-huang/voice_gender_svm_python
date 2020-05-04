@@ -1,0 +1,47 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+a = pd.read_csv("C:/Users/b1002/Desktop/R_Practice/voicegender/voice.csv")
+print(a.describe()) # descriptive statistics
+
+print(a.dtypes) # check data type in each column
+print(a.shape) # check row and column count
+
+a.isnull().sum() # check missing value and there is no missing values
+
+X = a.drop('label', axis=1).values  # features
+y = a['label'].values # labels
+
+print(a['label'].value_counts()) # check label's distribution
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+  X, y, 
+  test_size = 0.4, 
+  random_state=42
+  )
+  
+from sklearn.preprocessing import StandardScaler
+
+sc = StandardScaler() # scale features
+sc.fit(X_train)
+X_train_std = sc.transform(X_train)
+X_test_std = sc.transform(X_test)
+
+from sklearn.svm import SVC
+
+svm = SVC(kernel = "linear", probability = True)
+svm.fit(X_train, y_train)
+
+svm.score(X_test, y_test)
+
+from sklearn.model_selection import cross_val_score
+
+cv_scores = cross_val_score(svm, X, y, cv=5) # cross validation
+
+print(cv_scores)
+print(cv_scores.mean())
+
